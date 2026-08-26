@@ -1,5 +1,15 @@
 {
   "item.goodfoods.dirt_apple": "Dirt Apple",
   "item.goodfoods.stone_apple": "Stone Apple",
-  "creativeTab.goodfoods.goodfoods_tab": "GoodFoods"
+  "item.goodfoods.copper_apple": "Copper Apple",
+  "item.goodfoods.iron_apple": "Iron Apple",
+  "creativeTab.goodfoods.goodfoods_tab": "GoodFoods",
+  "advancements.goodfoods.root.title": "GoodFoods",
+  "advancements.goodfoods.root.description": "Delicious and dangerous foods",
+  "advancements.goodfoods.first_apple.title": "First Apple!",
+  "advancements.goodfoods.first_apple.description": "Get The First Apple",
+  "advancements.goodfoods.bad_apple.title": "Bad Apple",
+  "advancements.goodfoods.bad_apple.description": "Bad Apple",
+  "advancements.goodfoods.metal_apple.title": "Iron Teeth and Copper Gums",
+  "advancements.goodfoods.metal_apple.description": "Eat a Metal Apple"
 }

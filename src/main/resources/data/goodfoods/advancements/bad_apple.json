@@ -1,0 +1,36 @@
+{
+  "parent": "goodfoods:root",
+  "display": {
+    "icon": {
+      "item": "goodfoods:dirt_apple"
+    },
+    "title": {
+      "translate": "advancements.goodfoods.bad_apple.title"
+    },
+    "description": {
+      "translate": "advancements.goodfoods.bad_apple.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "eat_bad_apple": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": [
+            "goodfoods:dirt_apple",
+            "goodfoods:stone_apple"
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "eat_bad_apple"
+    ]
+  ]
+}

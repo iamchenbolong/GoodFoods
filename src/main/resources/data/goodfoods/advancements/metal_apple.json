@@ -1,0 +1,36 @@
+{
+  "parent": "goodfoods:root",
+  "display": {
+    "icon": {
+      "item": "goodfoods:iron_apple"
+    },
+    "title": {
+      "translate": "advancements.goodfoods.metal_apple.title"
+    },
+    "description": {
+      "translate": "advancements.goodfoods.metal_apple.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "eat_metal_apple": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": [
+            "goodfoods:copper_apple",
+            "goodfoods:iron_apple"
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "eat_metal_apple"
+    ]
+  ]
+}

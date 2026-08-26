@@ -1,0 +1,23 @@
+{
+  "display": {
+    "icon": {
+      "item": "goodfoods:dirt_apple"
+    },
+    "title": {
+      "translate": "advancements.goodfoods.root.title"
+    },
+    "description": {
+      "translate": "advancements.goodfoods.root.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:textures/block/dirt.png"
+  },
+  "criteria": {
+    "trigger": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

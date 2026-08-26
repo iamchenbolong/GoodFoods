@@ -53,16 +53,40 @@ public class GoodFoods {
     public static final RegistryObject<Item> STONE_APPLE = ITEMS.register("stone_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
-                            .nutrition(20)          // 恢复满格饥饿值
-                            .saturationMod(4.0f)    // 饱和度 4
-                            .effect(() -> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 0), 1.0f)   // 5秒抗性提升I
-                            .effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 600, 0), 1.0f)            // 30秒反胃I
+                            .nutrition(20)
+                            .saturationMod(4.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 0), 1.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 600, 0), 1.0f)
                             .build()
                     )
             )
     );
 
-    // ----- 自定义创造模式标签 -----
+    // 铜苹果
+    public static final RegistryObject<Item> COPPER_APPLE = ITEMS.register("copper_apple",
+            () -> new Item(new Item.Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(6)
+                            .saturationMod(4.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 400, 1), 1.0f)   // 20秒生命恢复II
+                            .build()
+                    )
+            )
+    );
+
+    // 铁苹果
+    public static final RegistryObject<Item> IRON_APPLE = ITEMS.register("iron_apple",
+            () -> new Item(new Item.Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(10)
+                            .saturationMod(6.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 400, 1), 1.0f) // 20秒抗性提升II
+                            .build()
+                    )
+            )
+    );
+
+    // ----- 创造模式标签 -----
     public static final RegistryObject<CreativeModeTab> GOODFOODS_TAB =
             CREATIVE_MODE_TABS.register("goodfoods_tab",
                     () -> CreativeModeTab.builder()
@@ -72,7 +96,8 @@ public class GoodFoods {
                             .displayItems((params, output) -> {
                                 output.accept(DIRT_APPLE.get());
                                 output.accept(STONE_APPLE.get());
-                                // 后续新增食物在此添加
+                                output.accept(COPPER_APPLE.get());
+                                output.accept(IRON_APPLE.get());
                             })
                             .build()
             );
@@ -91,10 +116,12 @@ public class GoodFoods {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        // 如需添加到原版食物标签，可取消注释
+        // 可选：将食物添加到原版食物标签
         // if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
         //     event.accept(DIRT_APPLE.get());
         //     event.accept(STONE_APPLE.get());
+        //     event.accept(COPPER_APPLE.get());
+        //     event.accept(IRON_APPLE.get());
         // }
     }
 

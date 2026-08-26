@@ -1,5 +1,15 @@
 {
   "item.goodfoods.dirt_apple": "泥土苹果",
   "item.goodfoods.stone_apple": "石头苹果",
-  "creativeTab.goodfoods.goodfoods_tab": "奇思妙想的食物"
+  "item.goodfoods.copper_apple": "铜苹果",
+  "item.goodfoods.iron_apple": "铁苹果",
+  "creativeTab.goodfoods.goodfoods_tab": "奇思妙想的食物",
+  "advancements.goodfoods.root.title": "奇思妙想的食物",
+  "advancements.goodfoods.root.description": "美味又危险的食物",
+  "advancements.goodfoods.first_apple.title": "第一个苹果！",
+  "advancements.goodfoods.first_apple.description": "获得第一个苹果",
+  "advancements.goodfoods.bad_apple.title": "坏苹果",
+  "advancements.goodfoods.bad_apple.description": "坏苹果",
+  "advancements.goodfoods.metal_apple.title": "铁齿铜牙",
+  "advancements.goodfoods.metal_apple.description": "吃下一个金属苹果"
 }
