@@ -34,6 +34,7 @@ public class GoodFoods {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
+    // ----- 食物注册 -----
     // 泥土苹果
     public static final RegistryObject<Item> DIRT_APPLE = ITEMS.register("dirt_apple",
             () -> new Item(new Item.Properties()
@@ -48,15 +49,29 @@ public class GoodFoods {
             )
     );
 
-    // 自定义创造模式标签，标题使用可翻译组件
+    // 石头苹果
+    public static final RegistryObject<Item> STONE_APPLE = ITEMS.register("stone_apple",
+            () -> new Item(new Item.Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(20)          // 恢复满格饥饿值
+                            .saturationMod(4.0f)    // 饱和度 4
+                            .effect(() -> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 0), 1.0f)   // 5秒抗性提升I
+                            .effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 600, 0), 1.0f)            // 30秒反胃I
+                            .build()
+                    )
+            )
+    );
+
+    // ----- 自定义创造模式标签 -----
     public static final RegistryObject<CreativeModeTab> GOODFOODS_TAB =
             CREATIVE_MODE_TABS.register("goodfoods_tab",
                     () -> CreativeModeTab.builder()
                             .withTabsBefore(CreativeModeTabs.FOOD_AND_DRINKS)
                             .icon(() -> DIRT_APPLE.get().getDefaultInstance())
-                            .title(Component.translatable("creativeTab.goodfoods.goodfoods_tab")) // 关键：设置标题
+                            .title(Component.translatable("creativeTab.goodfoods.goodfoods_tab"))
                             .displayItems((params, output) -> {
                                 output.accept(DIRT_APPLE.get());
+                                output.accept(STONE_APPLE.get());
                                 // 后续新增食物在此添加
                             })
                             .build()
@@ -76,9 +91,10 @@ public class GoodFoods {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        // 如要添加到原版食物标签，可取消注释
+        // 如需添加到原版食物标签，可取消注释
         // if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
         //     event.accept(DIRT_APPLE.get());
+        //     event.accept(STONE_APPLE.get());
         // }
     }
 
