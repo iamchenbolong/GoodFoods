@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NDN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_scrap"
+    },
+    "D": {
+      "item": "goodfoods:diamond_apple"
+    }
+  },
+  "result": {
+    "item": "goodfoods:netherite_apple",
+    "count": 1
+  }
+}

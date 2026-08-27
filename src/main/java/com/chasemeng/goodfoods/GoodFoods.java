@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,6 +30,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
+import javax.annotation.Nonnull;
+
 @Mod(GoodFoods.MODID)
 public class GoodFoods {
     public static final String MODID = "goodfoods";
@@ -38,7 +41,7 @@ public class GoodFoods {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // ----- 已有食物 -----
+    // ----- 所有食物注册（已包含全部）-----
     public static final RegistryObject<Item> DIRT_APPLE = ITEMS.register("dirt_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -144,7 +147,31 @@ public class GoodFoods {
             )
     );
 
-    // ----- 创造模式标签 -----
+    public static final RegistryObject<Item> NETHERITE_APPLE = ITEMS.register("netherite_apple",
+            () -> new Item(new Item.Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(16)
+                            .saturationMod(20.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 6000, 2), 1.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.DIG_SPEED, 6000, 1), 1.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.DAMAGE_BOOST, 6000, 2), 1.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 6000, 2), 1.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.JUMP, 6000, 1), 1.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 6000, 2), 1.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.ABSORPTION, 6000, 2), 1.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.HARM, 1, 0), 1.0f)
+                            .effect(() -> new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 6000, 0), 1.0f)
+                            .build()
+                    )
+            )
+    );
+
+    // ===== 黑曜石苹果改为自定义物品类（不依赖 FoodProperties 的 effect）=====
+    public static final RegistryObject<Item> OBSIDIAN_APPLE = ITEMS.register("obsidian_apple",
+            ObsidianAppleItem::new
+    );
+
+    // ----- 创造模式标签（包含全部）-----
     public static final RegistryObject<CreativeModeTab> GOODFOODS_TAB =
             CREATIVE_MODE_TABS.register("goodfoods_tab",
                     () -> CreativeModeTab.builder()
@@ -161,6 +188,8 @@ public class GoodFoods {
                                 output.accept(REDSTONE_APPLE.get());
                                 output.accept(LAPIS_APPLE.get());
                                 output.accept(EMERALD_APPLE.get());
+                                output.accept(NETHERITE_APPLE.get());
+                                output.accept(OBSIDIAN_APPLE.get());
                             })
                             .build()
             );
@@ -179,7 +208,7 @@ public class GoodFoods {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        // 可选添加到原版食物标签
+        // 可选
     }
 
     @SubscribeEvent
@@ -196,7 +225,7 @@ public class GoodFoods {
         }
     }
 
-    // ----- 自定义煤炭苹果 -----
+    // ===== 自定义煤炭苹果（不变）=====
     public static class CoalAppleItem extends Item {
         public CoalAppleItem() {
             super(new Properties()
@@ -210,15 +239,52 @@ public class GoodFoods {
 
         @Override
         public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-            // 先调用父类处理恢复饱食度
             ItemStack result = super.finishUsingItem(stack, level, entity);
-
-            // 无论昼夜，给予隐身和夜视，持续5分钟（6000 tick）
             if (entity instanceof Player) {
                 entity.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 6000, 0, false, false));
                 entity.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 6000, 0, false, false));
             }
+            return result;
+        }
+    }
 
+    // ===== 自定义黑曜石苹果（解决伤害与抗性冲突）=====
+    public static class ObsidianAppleItem extends Item {
+        public ObsidianAppleItem() {
+            super(new Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(10)
+                            .saturationMod(10.0f)
+                            // 不在 FoodProperties 中添加任何效果，全部在 finishUsingItem 中手动控制
+                            .build()
+                    )
+            );
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+            // 1. 先执行原食物效果（恢复饥饿和饱和度）
+            ItemStack result = super.finishUsingItem(stack, level, entity);
+
+            // 2. 手动施加瞬间伤害 II（12 点魔法伤害）
+            if (!level.isClientSide && entity instanceof Player player) {
+                // 造成 12 点伤害（6 颗心），使用魔法伤害源
+                float damageAmount = 12.0F;
+                // 使用 level.damageSources().magic() 获取魔法伤害源
+                // 注意：这里使用 magic() 伤害，但为了防止抗性提前影响，我们在扣血后再加效果，顺序上先扣血
+                // 但为了确保扣血成功，我们使用 hurt 方法，如果玩家剩余血量不足，则会死亡。
+                boolean hurtResult = player.hurt(level.damageSources().magic(), damageAmount);
+                // 如果玩家因伤害死亡，则不再添加后续效果（因为玩家已经死亡）
+                if (!player.isAlive()) {
+                    return result;
+                }
+
+                // 3. 添加抗性提升 V（20秒）
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 400, 4, false, false));
+                // 4. 添加饱和效果（0.5秒）
+                player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 10, 0, false, false));
+            }
             return result;
         }
     }
