@@ -18,5 +18,11 @@
   "advancements.goodfoods.bad_apple.title": "Bad Apple",
   "advancements.goodfoods.bad_apple.description": "Bad Apple",
   "advancements.goodfoods.metal_apple.title": "Iron Teeth and Copper Gums",
-  "advancements.goodfoods.metal_apple.description": "Eat a Metal Apple"
+  "advancements.goodfoods.metal_apple.description": "Eat a Metal Apple",
+  "item.goodfoods.tnt_apple": "TNT Apple",
+  "gui.goodfoods.config.title": "GoodFoods Configuration",
+  "gui.goodfoods.config.radius": "TNT Explosion Radius",
+  "gui.goodfoods.config.radius_value": "Radius: %s",
+  "gui.goodfoods.config.save": "Save",
+  "gui.goodfoods.config.radius.desc": "Set the explosion radius of TNT Apple (1~100 blocks). Larger values may cause lag."
 }

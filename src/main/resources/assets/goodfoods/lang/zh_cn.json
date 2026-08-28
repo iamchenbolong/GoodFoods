@@ -18,5 +18,11 @@
   "advancements.goodfoods.bad_apple.title": "坏苹果",
   "advancements.goodfoods.bad_apple.description": "坏苹果",
   "advancements.goodfoods.metal_apple.title": "铁齿铜牙",
-  "advancements.goodfoods.metal_apple.description": "吃下一个金属苹果"
+  "advancements.goodfoods.metal_apple.description": "吃下一个金属苹果",
+  "item.goodfoods.tnt_apple": "TNT苹果",
+  "gui.goodfoods.config.title": "GoodFoods 配置",
+  "gui.goodfoods.config.radius": "TNT 爆炸半径",
+  "gui.goodfoods.config.radius_value": "半径：%s",
+  "gui.goodfoods.config.save": "保存",
+  "gui.goodfoods.config.radius.desc": "设置 TNT 苹果的爆炸半径（1~100 格）。值过大可能导致卡顿。"
 }
