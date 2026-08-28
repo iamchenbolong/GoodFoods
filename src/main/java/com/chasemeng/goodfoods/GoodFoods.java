@@ -206,7 +206,7 @@ public class GoodFoods {
             TNTAppleItem::new
     );
 
-    // ========== 附魔苹果（4种） ==========
+    // ========== 附魔苹果（5种） ==========
     // 13. 附魔钻石苹果
     public static final RegistryObject<Item> ENCHANTED_DIAMOND_APPLE = ITEMS.register("enchanted_diamond_apple",
             EnchantedDiamondAppleItem::new
@@ -225,6 +225,11 @@ public class GoodFoods {
     // 16. 附魔下界合金苹果
     public static final RegistryObject<Item> ENCHANTED_NETHERITE_APPLE = ITEMS.register("enchanted_netherite_apple",
             EnchantedNetheriteAppleItem::new
+    );
+
+    // ===== 新增：附魔绿宝石苹果 =====
+    public static final RegistryObject<Item> ENCHANTED_EMERALD_APPLE = ITEMS.register("enchanted_emerald_apple",
+            EnchantedEmeraldAppleItem::new
     );
 
     // ========== 创造模式标签 ==========
@@ -253,6 +258,7 @@ public class GoodFoods {
                                 output.accept(ENCHANTED_OBSIDIAN_APPLE.get());
                                 output.accept(ENCHANTED_TNT_APPLE.get());
                                 output.accept(ENCHANTED_NETHERITE_APPLE.get());
+                                output.accept(ENCHANTED_EMERALD_APPLE.get()); // 新增
                             })
                             .build()
             );
@@ -472,7 +478,7 @@ public class GoodFoods {
         }
     }
 
-    // ========== 附魔 TNT 苹果（可炸基岩，且基岩掉落自身）==========
+    // ========== 附魔 TNT 苹果 ==========
     public static class EnchantedTNTAppleItem extends EnchantedAppleItem {
         public EnchantedTNTAppleItem() {
             super(new Properties()
@@ -493,13 +499,11 @@ public class GoodFoods {
                 float radius = Config.getEnchantedTntAppleExplosionRadius();
                 BlockPos center = player.blockPosition();
 
-                // 生成爆炸粒子效果（不破坏方块）
                 Explosion explosion = new Explosion(level, player, center.getX(), center.getY(), center.getZ(),
                         radius, false, Explosion.BlockInteraction.KEEP);
                 explosion.explode();
                 explosion.finalizeExplosion(true);
 
-                // 手动破坏所有方块（包括基岩），基岩掉落自身
                 int radiusInt = (int) Math.ceil(radius);
                 for (int dx = -radiusInt; dx <= radiusInt; dx++) {
                     for (int dy = -radiusInt; dy <= radiusInt; dy++) {
@@ -509,21 +513,43 @@ public class GoodFoods {
                                 BlockPos pos = center.offset(dx, dy, dz);
                                 BlockState state = level.getBlockState(pos);
                                 if (!state.isAir()) {
-                                    // 判断是否为基岩
                                     if (state.getBlock() == Blocks.BEDROCK) {
-                                        // 基岩掉落自身
                                         Block.popResource(level, pos, new ItemStack(Blocks.BEDROCK));
                                     } else {
-                                        // 其他方块正常掉落
                                         Block.dropResources(state, level, pos);
                                     }
-                                    // 移除方块
                                     level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
                                 }
                             }
                         }
                     }
                 }
+            }
+            return result;
+        }
+    }
+
+    // ========== 新增：附魔绿宝石苹果 ==========
+    public static class EnchantedEmeraldAppleItem extends EnchantedAppleItem {
+        public EnchantedEmeraldAppleItem() {
+            super(new Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(10)          // 同绿宝石苹果
+                            .saturationMod(8.0f)
+                            .alwaysEat()
+                            .build()
+                    )
+            );
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+            ItemStack result = super.finishUsingItem(stack, level, entity);
+            if (!level.isClientSide && entity instanceof Player player) {
+                // 幸运 V（等级4）和村庄英雄 V（等级4），持续30分钟（36000 ticks）
+                player.addEffect(new MobEffectInstance(MobEffects.LUCK, 36000, 4, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 36000, 4, false, false));
             }
             return result;
         }
@@ -551,7 +577,6 @@ public class GoodFoods {
 
             int yBase = this.height / 2 - 50;
 
-            // 普通 TNT 爆炸半径
             this.tntSlider = new AbstractSliderButton(
                     this.width / 2 - 100, yBase + 20, 200, 20,
                     Component.translatable("gui.goodfoods.config.radius"),
@@ -574,7 +599,6 @@ public class GoodFoods {
             };
             this.addRenderableWidget(this.tntSlider);
 
-            // 附魔 TNT 爆炸半径
             this.enchantedTntSlider = new AbstractSliderButton(
                     this.width / 2 - 100, yBase + 70, 200, 20,
                     Component.translatable("gui.goodfoods.config.enchanted_radius"),
@@ -597,7 +621,6 @@ public class GoodFoods {
             };
             this.addRenderableWidget(this.enchantedTntSlider);
 
-            // 保存按钮
             this.addRenderableWidget(Button.builder(
                             Component.translatable("gui.goodfoods.config.save"),
                             (btn) -> {
@@ -610,7 +633,6 @@ public class GoodFoods {
                     .build()
             );
 
-            // 取消按钮
             this.addRenderableWidget(Button.builder(
                             Component.translatable("gui.cancel"),
                             (btn) -> this.onClose())
@@ -622,7 +644,6 @@ public class GoodFoods {
         @Override
         public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             this.renderBackground(guiGraphics);
-
             guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 0xFFFFFF);
 
             int yBase = this.height / 2 - 50;

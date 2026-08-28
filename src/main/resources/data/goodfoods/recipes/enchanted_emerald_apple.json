@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EBE",
+    "BAB",
+    "EBE"
+  ],
+  "key": {
+    "E": { "item": "minecraft:emerald_block" },
+    "B": { "item": "minecraft:lapis_block" },
+    "A": { "item": "goodfoods:emerald_apple" }
+  },
+  "result": {
+    "item": "goodfoods:enchanted_emerald_apple",
+    "count": 1
+  }
+}
