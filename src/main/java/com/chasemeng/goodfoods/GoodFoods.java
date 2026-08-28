@@ -53,8 +53,7 @@ public class GoodFoods {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // ========== 普通苹果（12种） ==========
-    // 1. 泥土苹果
+    // ========== 普通苹果（13种） ==========
     public static final RegistryObject<Item> DIRT_APPLE = ITEMS.register("dirt_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -68,7 +67,6 @@ public class GoodFoods {
             )
     );
 
-    // 2. 石头苹果
     public static final RegistryObject<Item> STONE_APPLE = ITEMS.register("stone_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -82,7 +80,6 @@ public class GoodFoods {
             )
     );
 
-    // 3. 铜苹果
     public static final RegistryObject<Item> COPPER_APPLE = ITEMS.register("copper_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -95,7 +92,6 @@ public class GoodFoods {
             )
     );
 
-    // 4. 铁苹果
     public static final RegistryObject<Item> IRON_APPLE = ITEMS.register("iron_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -108,7 +104,6 @@ public class GoodFoods {
             )
     );
 
-    // 5. 钻石苹果
     public static final RegistryObject<Item> DIAMOND_APPLE = ITEMS.register("diamond_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -126,12 +121,10 @@ public class GoodFoods {
             )
     );
 
-    // 6. 煤炭苹果（自定义类）
     public static final RegistryObject<Item> COAL_APPLE = ITEMS.register("coal_apple",
             CoalAppleItem::new
     );
 
-    // 7. 红石苹果
     public static final RegistryObject<Item> REDSTONE_APPLE = ITEMS.register("redstone_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -146,7 +139,6 @@ public class GoodFoods {
             )
     );
 
-    // 8. 青金石苹果
     public static final RegistryObject<Item> LAPIS_APPLE = ITEMS.register("lapis_lazuli_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -161,7 +153,6 @@ public class GoodFoods {
             )
     );
 
-    // 9. 绿宝石苹果
     public static final RegistryObject<Item> EMERALD_APPLE = ITEMS.register("emerald_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -175,7 +166,6 @@ public class GoodFoods {
             )
     );
 
-    // 10. 下界合金苹果
     public static final RegistryObject<Item> NETHERITE_APPLE = ITEMS.register("netherite_apple",
             () -> new Item(new Item.Properties()
                     .food(new FoodProperties.Builder()
@@ -196,38 +186,36 @@ public class GoodFoods {
             )
     );
 
-    // 11. 黑曜石苹果（自定义类）
     public static final RegistryObject<Item> OBSIDIAN_APPLE = ITEMS.register("obsidian_apple",
             ObsidianAppleItem::new
     );
 
-    // 12. TNT 苹果（自定义类）
     public static final RegistryObject<Item> TNT_APPLE = ITEMS.register("tnt_apple",
             TNTAppleItem::new
     );
 
+    // 基岩苹果（自定义类）
+    public static final RegistryObject<Item> BEDROCK_APPLE = ITEMS.register("bedrock_apple",
+            BedrockAppleItem::new
+    );
+
     // ========== 附魔苹果（5种） ==========
-    // 13. 附魔钻石苹果
     public static final RegistryObject<Item> ENCHANTED_DIAMOND_APPLE = ITEMS.register("enchanted_diamond_apple",
             EnchantedDiamondAppleItem::new
     );
 
-    // 14. 附魔黑曜石苹果
     public static final RegistryObject<Item> ENCHANTED_OBSIDIAN_APPLE = ITEMS.register("enchanted_obsidian_apple",
             EnchantedObsidianAppleItem::new
     );
 
-    // 15. 附魔 TNT 苹果
     public static final RegistryObject<Item> ENCHANTED_TNT_APPLE = ITEMS.register("enchanted_tnt_apple",
             EnchantedTNTAppleItem::new
     );
 
-    // 16. 附魔下界合金苹果
     public static final RegistryObject<Item> ENCHANTED_NETHERITE_APPLE = ITEMS.register("enchanted_netherite_apple",
             EnchantedNetheriteAppleItem::new
     );
 
-    // ===== 新增：附魔绿宝石苹果 =====
     public static final RegistryObject<Item> ENCHANTED_EMERALD_APPLE = ITEMS.register("enchanted_emerald_apple",
             EnchantedEmeraldAppleItem::new
     );
@@ -240,7 +228,6 @@ public class GoodFoods {
                             .icon(() -> DIRT_APPLE.get().getDefaultInstance())
                             .title(Component.translatable("creativeTab.goodfoods.goodfoods_tab"))
                             .displayItems((params, output) -> {
-                                // 普通苹果
                                 output.accept(DIRT_APPLE.get());
                                 output.accept(STONE_APPLE.get());
                                 output.accept(COPPER_APPLE.get());
@@ -253,12 +240,12 @@ public class GoodFoods {
                                 output.accept(NETHERITE_APPLE.get());
                                 output.accept(OBSIDIAN_APPLE.get());
                                 output.accept(TNT_APPLE.get());
-                                // 附魔苹果
+                                output.accept(BEDROCK_APPLE.get());
                                 output.accept(ENCHANTED_DIAMOND_APPLE.get());
                                 output.accept(ENCHANTED_OBSIDIAN_APPLE.get());
                                 output.accept(ENCHANTED_TNT_APPLE.get());
                                 output.accept(ENCHANTED_NETHERITE_APPLE.get());
-                                output.accept(ENCHANTED_EMERALD_APPLE.get()); // 新增
+                                output.accept(ENCHANTED_EMERALD_APPLE.get());
                             })
                             .build()
             );
@@ -375,6 +362,34 @@ public class GoodFoods {
                 Explosion explosion = new Explosion(level, player, x, y, z, radius, false, Explosion.BlockInteraction.DESTROY);
                 explosion.explode();
                 explosion.finalizeExplosion(true);
+            }
+            return result;
+        }
+    }
+
+    // ========== 自定义类：基岩苹果 ==========
+    public static class BedrockAppleItem extends Item {
+        public BedrockAppleItem() {
+            super(new Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(20)          // 最大饥饿值
+                            .saturationMod(20.0f)   // 最大饱和度
+                            .alwaysEat()
+                            .build()
+                    )
+            );
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+            ItemStack result = super.finishUsingItem(stack, level, entity);
+            if (!level.isClientSide && entity instanceof Player player) {
+                // 直接设置食物数据为满
+                player.getFoodData().setFoodLevel(20);
+                player.getFoodData().setSaturation(20.0f);
+                // 添加无限时长的抗性提升 V（999999 tick ≈ 13.9天）
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 999999, 4, false, false));
             }
             return result;
         }
@@ -529,12 +544,12 @@ public class GoodFoods {
         }
     }
 
-    // ========== 新增：附魔绿宝石苹果 ==========
+    // ========== 附魔绿宝石苹果 ==========
     public static class EnchantedEmeraldAppleItem extends EnchantedAppleItem {
         public EnchantedEmeraldAppleItem() {
             super(new Properties()
                     .food(new FoodProperties.Builder()
-                            .nutrition(10)          // 同绿宝石苹果
+                            .nutrition(10)
                             .saturationMod(8.0f)
                             .alwaysEat()
                             .build()
@@ -547,7 +562,6 @@ public class GoodFoods {
         public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
             ItemStack result = super.finishUsingItem(stack, level, entity);
             if (!level.isClientSide && entity instanceof Player player) {
-                // 幸运 V（等级4）和村庄英雄 V（等级4），持续30分钟（36000 ticks）
                 player.addEffect(new MobEffectInstance(MobEffects.LUCK, 36000, 4, false, false));
                 player.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 36000, 4, false, false));
             }

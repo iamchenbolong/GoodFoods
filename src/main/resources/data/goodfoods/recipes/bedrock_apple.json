@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "BAB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:bedrock"
+    },
+    "A": {
+      "item": "goodfoods:enchanted_obsidian_apple"
+    }
+  },
+  "result": {
+    "item": "goodfoods:bedrock_apple",
+    "count": 1
+  }
+}
