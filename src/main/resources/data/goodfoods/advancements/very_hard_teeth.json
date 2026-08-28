@@ -1,0 +1,35 @@
+{
+  "parent": "goodfoods:hard_teeth",
+  "display": {
+    "icon": {
+      "item": "goodfoods:bedrock_apple"
+    },
+    "title": {
+      "translate": "advancements.goodfoods.very_hard_teeth.title"
+    },
+    "description": {
+      "translate": "advancements.goodfoods.very_hard_teeth.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "eat_bedrock_apple": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": [
+            "goodfoods:bedrock_apple"
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "eat_bedrock_apple"
+    ]
+  ]
+}

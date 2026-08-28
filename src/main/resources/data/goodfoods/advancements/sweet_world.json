@@ -1,28 +1,27 @@
 {
-  "parent": "goodfoods:first_apple",
+  "parent": "goodfoods:root",
   "display": {
     "icon": {
-      "item": "goodfoods:dirt_apple"
+      "item": "goodfoods:milkshake"
     },
     "title": {
-      "translate": "advancements.goodfoods.bad_apple.title"
+      "translate": "advancements.goodfoods.sweet_world.title"
     },
     "description": {
-      "translate": "advancements.goodfoods.bad_apple.description"
+      "translate": "advancements.goodfoods.sweet_world.description"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
   "criteria": {
-    "eat_bad_apple": {
+    "drink_milkshake": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
           "items": [
-            "goodfoods:dirt_apple",
-            "goodfoods:stone_apple"
+            "goodfoods:milkshake"
           ]
         }
       }
@@ -30,7 +29,7 @@
   },
   "requirements": [
     [
-      "eat_bad_apple"
+      "drink_milkshake"
     ]
   ]
 }

@@ -1,28 +1,27 @@
 {
-  "parent": "goodfoods:first_apple",
+  "parent": "goodfoods:metal_apple",
   "display": {
     "icon": {
-      "item": "goodfoods:dirt_apple"
+      "item": "goodfoods:obsidian_apple"
     },
     "title": {
-      "translate": "advancements.goodfoods.bad_apple.title"
+      "translate": "advancements.goodfoods.hard_teeth.title"
     },
     "description": {
-      "translate": "advancements.goodfoods.bad_apple.description"
+      "translate": "advancements.goodfoods.hard_teeth.description"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
   "criteria": {
-    "eat_bad_apple": {
+    "eat_obsidian_apple": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
           "items": [
-            "goodfoods:dirt_apple",
-            "goodfoods:stone_apple"
+            "goodfoods:obsidian_apple"
           ]
         }
       }
@@ -30,7 +29,7 @@
   },
   "requirements": [
     [
-      "eat_bad_apple"
+      "eat_obsidian_apple"
     ]
   ]
 }

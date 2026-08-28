@@ -1,28 +1,27 @@
 {
-  "parent": "goodfoods:first_apple",
+  "parent": "goodfoods:boom",
   "display": {
     "icon": {
-      "item": "goodfoods:dirt_apple"
+      "item": "goodfoods:enchanted_tnt_apple"
     },
     "title": {
-      "translate": "advancements.goodfoods.bad_apple.title"
+      "translate": "advancements.goodfoods.super_boom.title"
     },
     "description": {
-      "translate": "advancements.goodfoods.bad_apple.description"
+      "translate": "advancements.goodfoods.super_boom.description"
     },
-    "frame": "task",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
   "criteria": {
-    "eat_bad_apple": {
+    "eat_enchanted_tnt_apple": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
           "items": [
-            "goodfoods:dirt_apple",
-            "goodfoods:stone_apple"
+            "goodfoods:enchanted_tnt_apple"
           ]
         }
       }
@@ -30,7 +29,7 @@
   },
   "requirements": [
     [
-      "eat_bad_apple"
+      "eat_enchanted_tnt_apple"
     ]
   ]
 }

@@ -28,6 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -43,6 +44,8 @@ import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Mod(GoodFoods.MODID)
 public class GoodFoods {
@@ -194,12 +197,11 @@ public class GoodFoods {
             TNTAppleItem::new
     );
 
-    // 基岩苹果（自定义类）
     public static final RegistryObject<Item> BEDROCK_APPLE = ITEMS.register("bedrock_apple",
             BedrockAppleItem::new
     );
 
-    // ========== 附魔苹果（5种） ==========
+    // ========== 附魔苹果（6种） ==========
     public static final RegistryObject<Item> ENCHANTED_DIAMOND_APPLE = ITEMS.register("enchanted_diamond_apple",
             EnchantedDiamondAppleItem::new
     );
@@ -218,6 +220,19 @@ public class GoodFoods {
 
     public static final RegistryObject<Item> ENCHANTED_EMERALD_APPLE = ITEMS.register("enchanted_emerald_apple",
             EnchantedEmeraldAppleItem::new
+    );
+
+    // ========== 新物品 ==========
+    public static final RegistryObject<Item> CAN = ITEMS.register("can",
+            () -> new Item(new Item.Properties().stacksTo(16))
+    );
+
+    public static final RegistryObject<Item> SPORTS_DRINK = ITEMS.register("sports_drink",
+            SportsDrinkItem::new
+    );
+
+    public static final RegistryObject<Item> MILKSHAKE = ITEMS.register("milkshake",
+            MilkshakeItem::new
     );
 
     // ========== 创造模式标签 ==========
@@ -246,6 +261,9 @@ public class GoodFoods {
                                 output.accept(ENCHANTED_TNT_APPLE.get());
                                 output.accept(ENCHANTED_NETHERITE_APPLE.get());
                                 output.accept(ENCHANTED_EMERALD_APPLE.get());
+                                output.accept(CAN.get());
+                                output.accept(SPORTS_DRINK.get());
+                                output.accept(MILKSHAKE.get());
                             })
                             .build()
             );
@@ -276,6 +294,23 @@ public class GoodFoods {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("GoodFoods server starting.");
+    }
+
+    @SubscribeEvent
+    public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
+        if (event.getTarget() instanceof net.minecraft.world.entity.animal.MushroomCow) {
+            Player player = event.getEntity();
+            ItemStack hand = player.getItemInHand(event.getHand());
+            if (!hand.isEmpty() && hand.getItem() == CAN.get()) {
+                if (!player.level().isClientSide) {
+                    hand.shrink(1);
+                    player.getInventory().add(new ItemStack(SPORTS_DRINK.get()));
+                    player.level().playSound(null, player.blockPosition(),
+                            net.minecraft.sounds.SoundEvents.BOTTLE_FILL, net.minecraft.sounds.SoundSource.PLAYERS, 1.0f, 1.0f);
+                }
+                event.setCanceled(true);
+            }
+        }
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -372,8 +407,8 @@ public class GoodFoods {
         public BedrockAppleItem() {
             super(new Properties()
                     .food(new FoodProperties.Builder()
-                            .nutrition(20)          // 最大饥饿值
-                            .saturationMod(20.0f)   // 最大饱和度
+                            .nutrition(20)
+                            .saturationMod(20.0f)
                             .alwaysEat()
                             .build()
                     )
@@ -385,10 +420,6 @@ public class GoodFoods {
         public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
             ItemStack result = super.finishUsingItem(stack, level, entity);
             if (!level.isClientSide && entity instanceof Player player) {
-                // 直接设置食物数据为满
-                player.getFoodData().setFoodLevel(20);
-                player.getFoodData().setSaturation(20.0f);
-                // 添加无限时长的抗性提升 V（999999 tick ≈ 13.9天）
                 player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 999999, 4, false, false));
             }
             return result;
@@ -493,8 +524,27 @@ public class GoodFoods {
         }
     }
 
-    // ========== 附魔 TNT 苹果 ==========
+    // ========== 附魔 TNT 苹果（保护管理员方块 + 光源方块） ==========
     public static class EnchantedTNTAppleItem extends EnchantedAppleItem {
+        // 定义不可破坏方块集合（管理员方块 + 光源方块）
+        private static final Set<Block> PROTECTED_BLOCKS = new HashSet<>();
+
+        static {
+            // 命令方块
+            PROTECTED_BLOCKS.add(Blocks.COMMAND_BLOCK);
+            PROTECTED_BLOCKS.add(Blocks.CHAIN_COMMAND_BLOCK);
+            PROTECTED_BLOCKS.add(Blocks.REPEATING_COMMAND_BLOCK);
+            // 屏障
+            PROTECTED_BLOCKS.add(Blocks.BARRIER);
+            // 结构方块
+            PROTECTED_BLOCKS.add(Blocks.STRUCTURE_BLOCK);
+            PROTECTED_BLOCKS.add(Blocks.STRUCTURE_VOID);
+            // 拼图方块
+            PROTECTED_BLOCKS.add(Blocks.JIGSAW);
+            // 光源方块（新增）
+            PROTECTED_BLOCKS.add(Blocks.LIGHT);
+        }
+
         public EnchantedTNTAppleItem() {
             super(new Properties()
                     .food(new FoodProperties.Builder()
@@ -514,11 +564,13 @@ public class GoodFoods {
                 float radius = Config.getEnchantedTntAppleExplosionRadius();
                 BlockPos center = player.blockPosition();
 
+                // 生成爆炸粒子效果（不破坏方块）
                 Explosion explosion = new Explosion(level, player, center.getX(), center.getY(), center.getZ(),
                         radius, false, Explosion.BlockInteraction.KEEP);
                 explosion.explode();
                 explosion.finalizeExplosion(true);
 
+                // 手动破坏所有非保护方块
                 int radiusInt = (int) Math.ceil(radius);
                 for (int dx = -radiusInt; dx <= radiusInt; dx++) {
                     for (int dy = -radiusInt; dy <= radiusInt; dy++) {
@@ -527,14 +579,17 @@ public class GoodFoods {
                             if (dist <= radius) {
                                 BlockPos pos = center.offset(dx, dy, dz);
                                 BlockState state = level.getBlockState(pos);
-                                if (!state.isAir()) {
-                                    if (state.getBlock() == Blocks.BEDROCK) {
+                                Block block = state.getBlock();
+                                if (!state.isAir() && !PROTECTED_BLOCKS.contains(block)) {
+                                    // 基岩特殊处理：掉落基岩本身
+                                    if (block == Blocks.BEDROCK) {
                                         Block.popResource(level, pos, new ItemStack(Blocks.BEDROCK));
                                     } else {
                                         Block.dropResources(state, level, pos);
                                     }
                                     level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
                                 }
+                                // 保护方块被跳过，不破坏
                             }
                         }
                     }
@@ -566,6 +621,64 @@ public class GoodFoods {
                 player.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 36000, 4, false, false));
             }
             return result;
+        }
+    }
+
+    // ========== 自定义类：运动饮料 ==========
+    public static class SportsDrinkItem extends Item {
+        public SportsDrinkItem() {
+            super(new Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(2)
+                            .saturationMod(0.4f)
+                            .alwaysEat()
+                            .build()
+                    )
+                    .stacksTo(1)
+            );
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+            super.finishUsingItem(stack, level, entity);
+            if (!level.isClientSide && entity instanceof Player player) {
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 6000, 4, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 6000, 1, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 6000, 4, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 6000, 0, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 6000, 0, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 6000, 0, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.JUMP, 6000, 4, false, false));
+            }
+            return new ItemStack(CAN.get());
+        }
+    }
+
+    // ========== 自定义类：奶昔 ==========
+    public static class MilkshakeItem extends Item {
+        public MilkshakeItem() {
+            super(new Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(4)
+                            .saturationMod(0.8f)
+                            .alwaysEat()
+                            .build()
+                    )
+                    .stacksTo(1)
+            );
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+            super.finishUsingItem(stack, level, entity);
+            if (!level.isClientSide && entity instanceof Player player) {
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 3600, 4, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 3600, 0, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20, 0, false, false));
+            }
+            return new ItemStack(CAN.get());
         }
     }
 

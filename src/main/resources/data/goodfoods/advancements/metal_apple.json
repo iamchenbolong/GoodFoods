@@ -1,5 +1,5 @@
 {
-  "parent": "goodfoods:root",
+  "parent": "goodfoods:first_apple",
   "display": {
     "icon": {
       "item": "goodfoods:iron_apple"

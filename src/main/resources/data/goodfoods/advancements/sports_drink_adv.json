@@ -1,0 +1,37 @@
+{
+  "parent": "goodfoods:root",
+  "display": {
+    "icon": {
+      "item": "goodfoods:sports_drink"
+    },
+    "title": {
+      "translate": "advancements.goodfoods.sports_drink_adv.title"
+    },
+    "description": {
+      "translate": "advancements.goodfoods.sports_drink_adv.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get_sports_drink": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "goodfoods:sports_drink"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get_sports_drink"
+    ]
+  ]
+}

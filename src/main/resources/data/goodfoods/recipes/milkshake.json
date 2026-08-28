@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "goodfoods:can" },
+    { "item": "minecraft:milk_bucket" },
+    { "item": "minecraft:sugar" },
+    { "item": "minecraft:sugar" }
+  ],
+  "result": {
+    "item": "goodfoods:milkshake",
+    "count": 1
+  }
+}
