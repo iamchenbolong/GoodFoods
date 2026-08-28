@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TBT",
+    "BAB",
+    "TBT"
+  ],
+  "key": {
+    "T": { "item": "minecraft:tnt" },
+    "B": { "item": "minecraft:lapis_block" },
+    "A": { "item": "goodfoods:tnt_apple" }
+  },
+  "result": {
+    "item": "goodfoods:enchanted_tnt_apple",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "OBO",
+    "BAB",
+    "OBO"
+  ],
+  "key": {
+    "O": { "item": "minecraft:obsidian" },
+    "B": { "item": "minecraft:lapis_block" },
+    "A": { "item": "goodfoods:obsidian_apple" }
+  },
+  "result": {
+    "item": "goodfoods:enchanted_obsidian_apple",
+    "count": 1
+  }
+}

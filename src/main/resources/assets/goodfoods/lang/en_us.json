@@ -3,13 +3,21 @@
   "item.goodfoods.stone_apple": "Stone Apple",
   "item.goodfoods.copper_apple": "Copper Apple",
   "item.goodfoods.iron_apple": "Iron Apple",
-  "item.goodfoods.diamond_apple": "Diamond Apple",
   "item.goodfoods.coal_apple": "Coal Apple",
-  "item.goodfoods.redstone_apple": "Redstone Apple",
-  "item.goodfoods.lapis_lazuli_apple": "Lapis Lazuli Apple",
-  "item.goodfoods.emerald_apple": "Emerald Apple",
-  "item.goodfoods.netherite_apple": "Netherite Apple",
-  "item.goodfoods.obsidian_apple": "Obsidian Apple",
+
+  "item.goodfoods.diamond_apple": "§bDiamond Apple",
+  "item.goodfoods.emerald_apple": "§bEmerald Apple",
+  "item.goodfoods.netherite_apple": "§bNetherite Apple",
+  "item.goodfoods.redstone_apple": "§bRedstone Apple",
+  "item.goodfoods.lapis_lazuli_apple": "§bLapis Lazuli Apple",
+  "item.goodfoods.tnt_apple": "§bTNT Apple",
+  "item.goodfoods.obsidian_apple": "§bObsidian Apple",
+
+  "item.goodfoods.enchanted_diamond_apple": "§dEnchanted Diamond Apple",
+  "item.goodfoods.enchanted_obsidian_apple": "§dEnchanted Obsidian Apple",
+  "item.goodfoods.enchanted_tnt_apple": "§dEnchanted TNT Apple",
+  "item.goodfoods.enchanted_netherite_apple": "§dEnchanted Netherite Apple",
+
   "creativeTab.goodfoods.goodfoods_tab": "GoodFoods",
   "advancements.goodfoods.root.title": "GoodFoods",
   "advancements.goodfoods.root.description": "Delicious and dangerous foods",
@@ -19,10 +27,13 @@
   "advancements.goodfoods.bad_apple.description": "Bad Apple",
   "advancements.goodfoods.metal_apple.title": "Iron Teeth and Copper Gums",
   "advancements.goodfoods.metal_apple.description": "Eat a Metal Apple",
-  "item.goodfoods.tnt_apple": "TNT Apple",
+
   "gui.goodfoods.config.title": "GoodFoods Configuration",
   "gui.goodfoods.config.radius": "TNT Explosion Radius",
   "gui.goodfoods.config.radius_value": "Radius: %s",
-  "gui.goodfoods.config.save": "Save",
-  "gui.goodfoods.config.radius.desc": "Set the explosion radius of TNT Apple (1~100 blocks). Larger values may cause lag."
+  "gui.goodfoods.config.radius.desc": "Normal TNT Apple explosion radius (1-100 blocks).",
+  "gui.goodfoods.config.enchanted_radius": "Enchanted TNT Explosion Radius",
+  "gui.goodfoods.config.enchanted_radius_value": "Radius: %s",
+  "gui.goodfoods.config.enchanted_radius.desc": "Enchanted TNT Apple explosion radius (1-50 blocks), can break bedrock.",
+  "gui.goodfoods.config.save": "Save"
 }

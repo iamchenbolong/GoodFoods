@@ -3,13 +3,21 @@
   "item.goodfoods.stone_apple": "石头苹果",
   "item.goodfoods.copper_apple": "铜苹果",
   "item.goodfoods.iron_apple": "铁苹果",
-  "item.goodfoods.diamond_apple": "钻石苹果",
   "item.goodfoods.coal_apple": "煤炭苹果",
-  "item.goodfoods.redstone_apple": "红石苹果",
-  "item.goodfoods.lapis_lazuli_apple": "青金石苹果",
-  "item.goodfoods.emerald_apple": "绿宝石苹果",
-  "item.goodfoods.netherite_apple": "下界合金苹果",
-  "item.goodfoods.obsidian_apple": "黑曜石苹果",
+
+  "item.goodfoods.diamond_apple": "§b钻石苹果",
+  "item.goodfoods.emerald_apple": "§b绿宝石苹果",
+  "item.goodfoods.netherite_apple": "§b下界合金苹果",
+  "item.goodfoods.redstone_apple": "§b红石苹果",
+  "item.goodfoods.lapis_lazuli_apple": "§b青金石苹果",
+  "item.goodfoods.tnt_apple": "§bTNT苹果",
+  "item.goodfoods.obsidian_apple": "§b黑曜石苹果",
+
+  "item.goodfoods.enchanted_diamond_apple": "§d附魔钻石苹果",
+  "item.goodfoods.enchanted_obsidian_apple": "§d附魔黑曜石苹果",
+  "item.goodfoods.enchanted_tnt_apple": "§d附魔TNT苹果",
+  "item.goodfoods.enchanted_netherite_apple": "§d附魔下界合金苹果",
+
   "creativeTab.goodfoods.goodfoods_tab": "奇思妙想的食物",
   "advancements.goodfoods.root.title": "奇思妙想的食物",
   "advancements.goodfoods.root.description": "美味又危险的食物",
@@ -19,10 +27,13 @@
   "advancements.goodfoods.bad_apple.description": "坏苹果",
   "advancements.goodfoods.metal_apple.title": "铁齿铜牙",
   "advancements.goodfoods.metal_apple.description": "吃下一个金属苹果",
-  "item.goodfoods.tnt_apple": "TNT苹果",
+
   "gui.goodfoods.config.title": "GoodFoods 配置",
   "gui.goodfoods.config.radius": "TNT 爆炸半径",
   "gui.goodfoods.config.radius_value": "半径：%s",
-  "gui.goodfoods.config.save": "保存",
-  "gui.goodfoods.config.radius.desc": "设置 TNT 苹果的爆炸半径（1~100 格）。值过大可能导致卡顿。"
+  "gui.goodfoods.config.radius.desc": "普通 TNT 苹果爆炸半径（1-100 格）。",
+  "gui.goodfoods.config.enchanted_radius": "附魔 TNT 爆炸半径",
+  "gui.goodfoods.config.enchanted_radius_value": "半径：%s",
+  "gui.goodfoods.config.enchanted_radius.desc": "附魔 TNT 苹果爆炸半径（1-50 格），可破坏基岩。",
+  "gui.goodfoods.config.save": "保存"
 }

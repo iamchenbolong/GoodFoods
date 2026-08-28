@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NBN",
+    "BAB",
+    "NBN"
+  ],
+  "key": {
+    "N": { "item": "minecraft:netherite_ingot" },
+    "B": { "item": "minecraft:lapis_block" },
+    "A": { "item": "goodfoods:netherite_apple" }
+  },
+  "result": {
+    "item": "goodfoods:enchanted_netherite_apple",
+    "count": 1
+  }
+}

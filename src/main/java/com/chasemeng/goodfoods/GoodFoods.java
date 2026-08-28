@@ -20,7 +20,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ConfigScreenHandler;
@@ -51,15 +53,7 @@ public class GoodFoods {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // ========== 全部 12 种食物（均含 alwaysEat）==========
-    // （此处省略，与之前完全相同，请使用之前完整的食物定义）
-    // 但为了完整性，我将包含全部代码，但为了节省长度，这里用注释表示已有定义。
-    // 实际使用时，请复制之前完整定义。
-    // 注意：为避免截断，我会在最终答案中附上完整的文件下载链接？不行，只能文本。
-
-    // 由于之前已经完整提供过，这里再次完整提供（确保没有遗漏）。
-    // 我将在下面逐项列出。
-
+    // ========== 普通苹果（12种） ==========
     // 1. 泥土苹果
     public static final RegistryObject<Item> DIRT_APPLE = ITEMS.register("dirt_apple",
             () -> new Item(new Item.Properties()
@@ -132,7 +126,7 @@ public class GoodFoods {
             )
     );
 
-    // 6. 煤炭苹果
+    // 6. 煤炭苹果（自定义类）
     public static final RegistryObject<Item> COAL_APPLE = ITEMS.register("coal_apple",
             CoalAppleItem::new
     );
@@ -202,14 +196,35 @@ public class GoodFoods {
             )
     );
 
-    // 11. 黑曜石苹果
+    // 11. 黑曜石苹果（自定义类）
     public static final RegistryObject<Item> OBSIDIAN_APPLE = ITEMS.register("obsidian_apple",
             ObsidianAppleItem::new
     );
 
-    // 12. TNT 苹果
+    // 12. TNT 苹果（自定义类）
     public static final RegistryObject<Item> TNT_APPLE = ITEMS.register("tnt_apple",
             TNTAppleItem::new
+    );
+
+    // ========== 附魔苹果（4种） ==========
+    // 13. 附魔钻石苹果
+    public static final RegistryObject<Item> ENCHANTED_DIAMOND_APPLE = ITEMS.register("enchanted_diamond_apple",
+            EnchantedDiamondAppleItem::new
+    );
+
+    // 14. 附魔黑曜石苹果
+    public static final RegistryObject<Item> ENCHANTED_OBSIDIAN_APPLE = ITEMS.register("enchanted_obsidian_apple",
+            EnchantedObsidianAppleItem::new
+    );
+
+    // 15. 附魔 TNT 苹果
+    public static final RegistryObject<Item> ENCHANTED_TNT_APPLE = ITEMS.register("enchanted_tnt_apple",
+            EnchantedTNTAppleItem::new
+    );
+
+    // 16. 附魔下界合金苹果
+    public static final RegistryObject<Item> ENCHANTED_NETHERITE_APPLE = ITEMS.register("enchanted_netherite_apple",
+            EnchantedNetheriteAppleItem::new
     );
 
     // ========== 创造模式标签 ==========
@@ -220,6 +235,7 @@ public class GoodFoods {
                             .icon(() -> DIRT_APPLE.get().getDefaultInstance())
                             .title(Component.translatable("creativeTab.goodfoods.goodfoods_tab"))
                             .displayItems((params, output) -> {
+                                // 普通苹果
                                 output.accept(DIRT_APPLE.get());
                                 output.accept(STONE_APPLE.get());
                                 output.accept(COPPER_APPLE.get());
@@ -232,6 +248,11 @@ public class GoodFoods {
                                 output.accept(NETHERITE_APPLE.get());
                                 output.accept(OBSIDIAN_APPLE.get());
                                 output.accept(TNT_APPLE.get());
+                                // 附魔苹果
+                                output.accept(ENCHANTED_DIAMOND_APPLE.get());
+                                output.accept(ENCHANTED_OBSIDIAN_APPLE.get());
+                                output.accept(ENCHANTED_TNT_APPLE.get());
+                                output.accept(ENCHANTED_NETHERITE_APPLE.get());
                             })
                             .build()
             );
@@ -323,7 +344,7 @@ public class GoodFoods {
         }
     }
 
-    // ========== 自定义类：TNT 苹果（修复黑曜石无法破坏问题）==========
+    // ========== 自定义类：普通 TNT 苹果 ==========
     public static class TNTAppleItem extends Item {
         public TNTAppleItem() {
             super(new Properties()
@@ -345,28 +366,161 @@ public class GoodFoods {
                 double x = player.getX();
                 double y = player.getY();
                 double z = player.getZ();
-
-                // 1. 生成爆炸效果（视觉+音效）
                 Explosion explosion = new Explosion(level, player, x, y, z, radius, false, Explosion.BlockInteraction.DESTROY);
                 explosion.explode();
                 explosion.finalizeExplosion(true);
+            }
+            return result;
+        }
+    }
 
-                // 2. 手动遍历球形区域，强制破坏除基岩外的所有方块
-                int intRadius = (int) Math.ceil(radius);
-                for (int dx = -intRadius; dx <= intRadius; dx++) {
-                    for (int dy = -intRadius; dy <= intRadius; dy++) {
-                        for (int dz = -intRadius; dz <= intRadius; dz++) {
-                            double distSq = dx*dx + dy*dy + dz*dz;
-                            if (distSq > radius * radius) continue;
-                            BlockPos pos = new BlockPos(
-                                    (int)(x + dx), (int)(y + dy), (int)(z + dz)
-                            );
-                            // 如果是基岩，跳过
-                            if (level.getBlockState(pos).is(Blocks.BEDROCK)) {
-                                continue;
+    // ========== 附魔物品基类 ==========
+    private static abstract class EnchantedAppleItem extends Item {
+        public EnchantedAppleItem(Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        public boolean isFoil(@Nonnull ItemStack stack) {
+            return true;
+        }
+    }
+
+    // ========== 附魔钻石苹果 ==========
+    public static class EnchantedDiamondAppleItem extends EnchantedAppleItem {
+        public EnchantedDiamondAppleItem() {
+            super(new Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(8)
+                            .saturationMod(15.0f)
+                            .alwaysEat()
+                            .build()
+                    )
+            );
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+            ItemStack result = super.finishUsingItem(stack, level, entity);
+            if (!level.isClientSide && entity instanceof Player player) {
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1200, 2, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 1200, 1, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1200, 3, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 1200, 2, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.JUMP, 1200, 2, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1200, 2, false, false));
+            }
+            return result;
+        }
+    }
+
+    // ========== 附魔黑曜石苹果 ==========
+    public static class EnchantedObsidianAppleItem extends EnchantedAppleItem {
+        public EnchantedObsidianAppleItem() {
+            super(new Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(10)
+                            .saturationMod(10.0f)
+                            .alwaysEat()
+                            .build()
+                    )
+            );
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+            ItemStack result = super.finishUsingItem(stack, level, entity);
+            if (!level.isClientSide && entity instanceof Player player) {
+                player.hurt(level.damageSources().magic(), 4.0F);
+                if (!player.isAlive()) return result;
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1200, 4, false, false));
+            }
+            return result;
+        }
+    }
+
+    // ========== 附魔下界合金苹果 ==========
+    public static class EnchantedNetheriteAppleItem extends EnchantedAppleItem {
+        public EnchantedNetheriteAppleItem() {
+            super(new Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(16)
+                            .saturationMod(20.0f)
+                            .alwaysEat()
+                            .build()
+                    )
+            );
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+            ItemStack result = super.finishUsingItem(stack, level, entity);
+            if (!level.isClientSide && entity instanceof Player player) {
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 6000, 4, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 6000, 1, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 6000, 4, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 6000, 4, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.JUMP, 6000, 2, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 6000, 4, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 6000, 0, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 6000, 4, false, false));
+            }
+            return result;
+        }
+    }
+
+    // ========== 附魔 TNT 苹果（可炸基岩，且基岩掉落自身）==========
+    public static class EnchantedTNTAppleItem extends EnchantedAppleItem {
+        public EnchantedTNTAppleItem() {
+            super(new Properties()
+                    .food(new FoodProperties.Builder()
+                            .nutrition(0)
+                            .saturationMod(0.0f)
+                            .alwaysEat()
+                            .build()
+                    )
+            );
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+            ItemStack result = super.finishUsingItem(stack, level, entity);
+            if (!level.isClientSide && entity instanceof Player player) {
+                float radius = Config.getEnchantedTntAppleExplosionRadius();
+                BlockPos center = player.blockPosition();
+
+                // 生成爆炸粒子效果（不破坏方块）
+                Explosion explosion = new Explosion(level, player, center.getX(), center.getY(), center.getZ(),
+                        radius, false, Explosion.BlockInteraction.KEEP);
+                explosion.explode();
+                explosion.finalizeExplosion(true);
+
+                // 手动破坏所有方块（包括基岩），基岩掉落自身
+                int radiusInt = (int) Math.ceil(radius);
+                for (int dx = -radiusInt; dx <= radiusInt; dx++) {
+                    for (int dy = -radiusInt; dy <= radiusInt; dy++) {
+                        for (int dz = -radiusInt; dz <= radiusInt; dz++) {
+                            double dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+                            if (dist <= radius) {
+                                BlockPos pos = center.offset(dx, dy, dz);
+                                BlockState state = level.getBlockState(pos);
+                                if (!state.isAir()) {
+                                    // 判断是否为基岩
+                                    if (state.getBlock() == Blocks.BEDROCK) {
+                                        // 基岩掉落自身
+                                        Block.popResource(level, pos, new ItemStack(Blocks.BEDROCK));
+                                    } else {
+                                        // 其他方块正常掉落
+                                        Block.dropResources(state, level, pos);
+                                    }
+                                    // 移除方块
+                                    level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+                                }
                             }
-                            // 破坏方块并掉落物品
-                            level.destroyBlock(pos, true);
                         }
                     }
                 }
@@ -375,28 +529,33 @@ public class GoodFoods {
         }
     }
 
-    // ========== 配置屏幕（支持多配置项）==========
+    // ========== 配置屏幕 ==========
     @OnlyIn(Dist.CLIENT)
     private static class ConfigScreen extends Screen {
         private final Screen parent;
-        private int currentRadius;
-        private AbstractSliderButton radiusSlider;
+        private int currentTntRadius;
+        private int currentEnchantedTntRadius;
+        private AbstractSliderButton tntSlider;
+        private AbstractSliderButton enchantedTntSlider;
 
         protected ConfigScreen(Screen parent) {
             super(Component.translatable("gui.goodfoods.config.title"));
             this.parent = parent;
-            this.currentRadius = Config.getTntAppleExplosionRadius();
+            this.currentTntRadius = Config.getTntAppleExplosionRadius();
+            this.currentEnchantedTntRadius = Config.getEnchantedTntAppleExplosionRadius();
         }
 
         @Override
         protected void init() {
             super.init();
 
-            // ---- TNT 爆炸半径滑块 ----
-            this.radiusSlider = new AbstractSliderButton(
-                    this.width / 2 - 100, this.height / 2 - 10, 200, 20,
+            int yBase = this.height / 2 - 50;
+
+            // 普通 TNT 爆炸半径
+            this.tntSlider = new AbstractSliderButton(
+                    this.width / 2 - 100, yBase + 20, 200, 20,
                     Component.translatable("gui.goodfoods.config.radius"),
-                    (double)(currentRadius - 1) / 99
+                    (double)(currentTntRadius - 1) / 99
             ) {
                 {
                     this.updateMessage();
@@ -410,20 +569,44 @@ public class GoodFoods {
 
                 @Override
                 protected void applyValue() {
-                    currentRadius = (int)(this.value * 99) + 1;
+                    currentTntRadius = (int)(this.value * 99) + 1;
                 }
             };
-            this.addRenderableWidget(this.radiusSlider);
+            this.addRenderableWidget(this.tntSlider);
+
+            // 附魔 TNT 爆炸半径
+            this.enchantedTntSlider = new AbstractSliderButton(
+                    this.width / 2 - 100, yBase + 70, 200, 20,
+                    Component.translatable("gui.goodfoods.config.enchanted_radius"),
+                    (double)(currentEnchantedTntRadius - 1) / 49
+            ) {
+                {
+                    this.updateMessage();
+                }
+
+                @Override
+                protected void updateMessage() {
+                    int val = (int)(this.value * 49) + 1;
+                    this.setMessage(Component.translatable("gui.goodfoods.config.enchanted_radius_value", val));
+                }
+
+                @Override
+                protected void applyValue() {
+                    currentEnchantedTntRadius = (int)(this.value * 49) + 1;
+                }
+            };
+            this.addRenderableWidget(this.enchantedTntSlider);
 
             // 保存按钮
             this.addRenderableWidget(Button.builder(
                             Component.translatable("gui.goodfoods.config.save"),
                             (btn) -> {
-                                Config.COMMON.tntAppleExplosionRadius.set(currentRadius);
+                                Config.COMMON.tntAppleExplosionRadius.set(currentTntRadius);
+                                Config.COMMON.enchantedTntAppleExplosionRadius.set(currentEnchantedTntRadius);
                                 Config.SPEC.save();
                                 this.onClose();
                             })
-                    .bounds(this.width / 2 - 100, this.height / 2 + 30, 200, 20)
+                    .bounds(this.width / 2 - 100, yBase + 110, 200, 20)
                     .build()
             );
 
@@ -431,7 +614,7 @@ public class GoodFoods {
             this.addRenderableWidget(Button.builder(
                             Component.translatable("gui.cancel"),
                             (btn) -> this.onClose())
-                    .bounds(this.width / 2 - 100, this.height / 2 + 60, 200, 20)
+                    .bounds(this.width / 2 - 100, yBase + 140, 200, 20)
                     .build()
             );
         }
@@ -442,10 +625,12 @@ public class GoodFoods {
 
             guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 0xFFFFFF);
 
-            // 描述文字
-            Component radiusDesc = Component.translatable("gui.goodfoods.config.radius.desc");
-            int descX = this.width / 2 - this.font.width(radiusDesc) / 2;
-            guiGraphics.drawString(this.font, radiusDesc, descX, this.height / 2 - 35, 0xAAAAAA);
+            int yBase = this.height / 2 - 50;
+            Component tntDesc = Component.translatable("gui.goodfoods.config.radius.desc");
+            guiGraphics.drawString(this.font, tntDesc, this.width / 2 - this.font.width(tntDesc) / 2, yBase, 0xAAAAAA);
+
+            Component enchDesc = Component.translatable("gui.goodfoods.config.enchanted_radius.desc");
+            guiGraphics.drawString(this.font, enchDesc, this.width / 2 - this.font.width(enchDesc) / 2, yBase + 50, 0xAAAAAA);
 
             super.render(guiGraphics, mouseX, mouseY, partialTick);
         }

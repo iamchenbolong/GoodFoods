@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DBD",
+    "BAB",
+    "DBD"
+  ],
+  "key": {
+    "D": { "item": "minecraft:diamond_block" },
+    "B": { "item": "minecraft:lapis_block" },
+    "A": { "item": "goodfoods:diamond_apple" }
+  },
+  "result": {
+    "item": "goodfoods:enchanted_diamond_apple",
+    "count": 1
+  }
+}
